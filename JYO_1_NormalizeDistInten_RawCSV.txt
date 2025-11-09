@@ -1,0 +1,76 @@
+#Hello. This script aims to normalize the distance and fluorescence intensity of a given section for comparison with other samples.
+#The script requires a two-column list of numbers representing x-values of distance and y-values of intensity (preferably with ImageJ)
+
+    ###First, let's import the data file with pandas and make sure we imported it correctly. 
+    #Upload the CSV file to the Jupyter notebook.
+    #Change the input name to match the input CSV file name.
+    #Change the output name if desired (default is output.csv)
+
+import pandas as pd
+print ("1. The data should be a CSV file with DISTance in the X column and INTENsity in the Y column.")
+print ()
+###>>>>>>CHANGE THE INPUT NAME HERE<<<<<<###
+DataFile = pd.read_csv("1March2019_spir1spirMIMIC_MYoVnos_25_F1E1_l9_Redoalive.csv")
+#Converts all remaining numbers to floating point numbers for further analysis
+DataFile = DataFile.astype(float)
+print ()
+print ("2A. Here are the first five rows of your data file:")
+print (DataFile.head())
+print ()
+print ("2B. And here are the last five rows of your data file:")
+print (DataFile.tail())
+print ()
+
+
+    ###Next, let's normalize to distance and intensity (so max value of each is 1).
+#Find max values of each Distance and Intensity
+print ()
+print ("3. OK, now here are the max DIST (X) and INTEN (Y) in your file:")
+print ("The maximum DIST:")
+MaxDist = DataFile['X'].max()
+print (MaxDist)
+print ()
+print ("The maximum INTEN:")
+MaxInten = DataFile['Y'].max()
+MinInten = DataFile['Y'].min()
+print (MaxInten)
+print ()
+print ("The minimum INTEN:")
+print (MinInten)
+print ()
+
+#Divide each value by its respective max value to normalize DISTance from 0-1 and to normalize and rescale intensity from 0-1.
+print ("3B. Now normalizing to DIST and INTEN:")
+DataFile['X'] = DataFile['X']/float(MaxDist)
+DataFile['Y'] = (DataFile['Y']-float(MinInten))/(float(MaxInten)-float(MinInten))
+print ()
+print ("3C. Here are the first five rows of your normalized data file:")
+print (DataFile.head())
+print ()
+print ("3D. And here are the last five rows of your normalized data file:")
+print (DataFile.tail())
+print ()
+
+    ###Exporting the file
+print ("4. Okay, now we are going to export your file.")
+print ()
+###>>>>>>CHANGE THE OUTPUT NAME HERE<<<<<<###
+DataFile.to_csv('output.csv', index = False, header=True)
+
+###################################
+
+#Graphing in Python
+print ("5. Double-check that the file is what you wanted, and we will proceed to graph it.")
+print ()
+
+#Import pyplot to make the graph and give it DISTance (x) and INTENsity (y) values
+
+from matplotlib import pyplot as plt
+import numpy as np
+import math
+x = DataFile['X']
+y = DataFile['Y']
+plt.plot(x,y)
+plt.xlabel("Distance, normalized")
+plt.ylabel("Fluorescence intensity (AU), normalized")
+plt.show()

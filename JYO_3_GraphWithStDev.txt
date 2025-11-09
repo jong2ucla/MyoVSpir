@@ -1,0 +1,34 @@
+import pandas as pd
+import numpy as np
+from matplotlib import pyplot as plt
+
+#import file as array and drop empty columns
+#first upload the file to Jupyter for easy access
+df = pd.read_csv('ForPython.csv')
+df = df.drop(columns=[i for i in df.columns if 'Unnamed' in i]) #drop empty columns
+print (df.head())
+df = df.values
+
+#define variables for avg plot
+Dist = df[:,0]
+Avg = df[:,1:5]
+plt.plot(Dist,Avg)
+
+#define variables for StDev plot
+StDev = df[:,5:9]
+Fill1 = Avg+StDev
+Fill2 = Avg-StDev
+ModStDevWTPLUS = Fill1[:,0]
+ModStDevWTMIN = Fill2[:,0]
+ModStDevSpir1SpirMIMiCPLUS = Fill1[:,1]
+ModStDevSpir1SpirMIMiCMIN = Fill2[:,1]
+ModStDevSpir1PLUS = Fill1[:,2]
+ModStDevSpir1MIN = Fill2[:,2]
+ModStDevSpirMIMiCPLUS = Fill1[:,3]
+ModStDevSpirMIMiCMIN = Fill2[:,3]
+
+plt.fill_between(Dist,ModStDevWTPLUS,ModStDevWTMIN, alpha=0.2)
+plt.fill_between(Dist,ModStDevSpir1SpirMIMiCPLUS,ModStDevSpir1SpirMIMiCMIN, alpha=0.2)
+plt.fill_between(Dist,ModStDevSpir1PLUS,ModStDevSpir1MIN, alpha=0.2)
+plt.fill_between(Dist,ModStDevSpirMIMiCPLUS,ModStDevSpirMIMiCMIN, alpha=0.2)
+
